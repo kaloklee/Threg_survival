@@ -1,5 +1,6 @@
 //Inverse Gaussian Distribution as formulated in R package 'threg'
-//No covariate in this version
+//The initial health status, y0, should be positive.  We model is as log(y0) = X*beta and then exponentiate
+//This example has a single covariate with 2 levels.
 
 functions {
 
@@ -61,31 +62,8 @@ model {
 }
 
 
-// generated quantities{
-// 
-//     row_vector[T+1] Survival=rep_row_vector(0,T+1);
-//    
-//     Survival[1] = 1;
-//     
-//     for (t in 2:T+1) {    
-//       
-//       for (i in 1:N) {
-// 
-//         real lny0_Xb = Xvar[i,K]*b_lny0 ; // 1*K * K*1 = N*1
-//         real mu_Xb = Xvar[i,K]*b_mu ; // N*K * K*1 = N*1
-//  
-//         Survival[t] += exp(threg_IG_surv_ll(t,mu_Xb,exp(lny0_Xb),1));
-//       
-//       }
-//       
-//     }
-//    
-//    Survival=Survival/N;
-// 
-// }
-
-
-
+//This example has a single covariate with 2 levels.
+//We only need to generate two lines.
 generated quantities{
 
     row_vector[T+1] Survival0=rep_row_vector(0,T+1);
