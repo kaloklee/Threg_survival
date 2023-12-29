@@ -1,5 +1,5 @@
 //Inverse Gaussian Distribution as formulated in R package 'threg'
-//No covariate in this version
+//Allowing random effect on the drift parameter
 
 functions {
 
@@ -39,8 +39,8 @@ parameters {
   real a_mu;
   real<lower=0> a_sig;
   vector[N] eta;
-  vector[K-1] b_lny0; // initial heath status
-  vector[K] b_mu; // mean
+  vector[K-1] b_mu; // drift
+  vector[K] b_lny0; // initial heath status
 
 }
 
@@ -54,15 +54,15 @@ transformed parameters {
 model {
 
   a_mu ~ std_normal();
-  a_sig ~ std_normal();
+  a_sig ~ cauchy(0, 1); //a_sig ~ std_normal();
   eta ~ std_normal();
   b_lny0 ~ std_normal();
   b_mu ~ std_normal();
 
   for (i in 1:N) {
     
-    real lny0_Xb = a[i] + Xvar[i,2:K]*b_lny0 ; //  
-    real mu_Xb = Xvar[i,]*b_mu ;  // 1*K * K*1 = 1*1
+    real lny0_Xb = Xvar[i,]*b_lny0 ;
+    real mu_Xb = a[i] + Xvar[i,2:K]*b_mu ;  // 1x1 + 1x(K-1) * (K-1)x1 = 1x1
 
     if (i <= Nuc) { target += threg_IG_ll(y[i],mu_Xb,exp(lny0_Xb),1) ; }
 
@@ -84,48 +84,21 @@ generated quantities{
     
     for (t in 2:T+1) {    
       
-      for (i in 1:2000) {
-      
-      real a_ran = normal_rng(a_mu,a_sig)  ; // 
-      
-        Survival0[t] += exp(threg_IG_surv_ll(t,b_mu[1],exp(a_ran),1));  
-        Survival1[t] += exp(threg_IG_surv_ll(t,sum(b_mu),exp(a_ran+sum(b_lny0)),1));
+      for (i in 1:N) {
+        
+        real lny0_Xb = Xvar[i,]*b_lny0 ;
+        real mu_Xb = a[i] + Xvar[i,2:K]*b_mu ;  // 1x1 + 1x(K-1) * (K-1)x1 = 1x1
+        
+        Survival0[t] += exp(threg_IG_surv_ll(t,a[i],exp(b_lny0[1]),1));  
+        Survival1[t] += exp(threg_IG_surv_ll(t,mu_Xb,exp(lny0_Xb),1));
       
       }
     
     }
     
-    Survival1[2:T+1]=Survival1[2:T+1]/2000;
-    Survival0[2:T+1]=Survival0[2:T+1]/2000;
+    Survival1[2:T+1]=Survival1[2:T+1]/N;
+    Survival0[2:T+1]=Survival0[2:T+1]/N;
 
 }
-
-
-
-// generated quantities{
-// 
-//    row_vector[T+1] Survival0=rep_row_vector(0,T+1);
-//    row_vector[T+1] Survival1=rep_row_vector(0,T+1);
-//  
-//    for (t in 2:T+1) {
-//      
-//       for (i in 1:N) {
-// 
-//       real lny0_Xb = a[i] + Xvar[i,2:K]*b_lny0 ; //  
-//       real mu_Xb = Xvar[i,]*b_mu ;  // 1*K * K*1 = 1*1
-// 
-//       if (Xvar[i,K] == 0) { Survival0[t] += exp(threg_IG_surv_ll(t,mu_Xb,exp(lny0_Xb),1)); }
-//       
-//       if (Xvar[i,K] == 1) { Survival1[t] += exp(threg_IG_surv_ll(t,mu_Xb,exp(lny0_Xb),1)); }
-// 
-//       }
-// 
-//     }
-// 
-//    Survival1=Survival1/sum(Xvar[,K]);
-//    Survival0=Survival0/(N-sum(Xvar[i,K])); 
-// 
-// }
-
 
 
