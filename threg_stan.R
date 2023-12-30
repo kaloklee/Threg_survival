@@ -77,9 +77,9 @@ treatment1_ribbons <-
 
 
 ggsurvplot(fit.km, risk.table = F)$plot + 
-  geom_line(data = treatment0_ribbons, aes( x=month, y=mean, color='model0')) +
-  geom_line(data = treatment1_ribbons, aes( x=month, y=mean, color='model1')) 
-  
+  geom_line(data = treatment0_ribbons, aes( x=month, y=mean, color='model0'), linetype='dashed') +
+  geom_line(data = treatment1_ribbons, aes( x=month, y=mean, color='model1'), linetype='dashed') +
+  scale_color_manual(values=c('red','blue','red','blue'))  
   
 ###############################################################
 
@@ -126,5 +126,6 @@ treatment1_ribbons <-
 
 
 ggsurvplot(fit.km, risk.table = F)$plot + 
-  geom_line(data = treatment0_ribbons, aes( x=month, y=mean, color='model0')) +
-  geom_line(data = treatment1_ribbons, aes( x=month, y=mean, color='model1')) 
+  geom_line(data = treatment0_ribbons, aes( x=month, y=mean, color='model0'), linetype='dashed') +
+  geom_line(data = treatment1_ribbons, aes( x=month, y=mean, color='model1'), linetype='dashed') +
+  scale_color_manual(values=c('red','blue','red','blue'))
