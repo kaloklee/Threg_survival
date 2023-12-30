@@ -11,6 +11,8 @@ In this repository, I coded it up using Stan for me to understand it better. The
 This is an example of how it can handle non-proportionality:
 ![alt text](https://github.com/kaloklee/Threg_survival/blob/main/output.jpg?raw=true)
 
+Feel free to contact me for comments: kaloklee@gmail.com
+
 **Reference**
 
 Lee MLT, Whitmore GA (2006). “Threshold Regression for Survival Analysis: Modeling
