@@ -6,7 +6,7 @@ This method attracts me because of its ability to handle non-proportional hazard
 
 There is a R package, _threg_, to run this method (Xiao et al. 2015) and I highly recommend it.
 
-In this repository, I coded it up using Stan for me to understand it better. 
+In this repository, I coded it up using Stan for me to understand it better. The file, **threg_stan.r**, is my R code and it uses **threg.stan**. 
 
 This is an example of how it can handle non-proportionality:
 ![alt text](https://github.com/kaloklee/Threg_survival/blob/main/output.jpg?raw=true)
